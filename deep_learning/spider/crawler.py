@@ -13,16 +13,22 @@ def request_html(i,url):
         conn.updateverify(i)
         return html.lower().replace("'","\""), True
     except urllib2.URLError as e:
+        print "Error " + str(e.reason)
         conn.updateerr(i, "Referrer: " + url + ";\nError: " + str(e.reason))
     except socket.timeout:
+        print "Error timeout"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error TimeOut"))
     except socket.error:
+        print "Error Socket"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error Socket"))
     except ssl.SSLError:
+        print "Error SSLError"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSL"))
     except ssl.CertificateError:
+        print "Error CertificateError"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSl"))
     except:
+        print "Error: " + sys.exc_info()[0]
         conn.updateerr(i,str("Referrer: " + url + ";\nError: " + sys.exc_info()[0]))
         os.abort()
     return "Error", False
@@ -67,8 +73,9 @@ def nblockInterval(n,min,max):
             website = conn.selectSeedweb(min)
             if website:
                 print "process -> " + str(n) + " | id ->" + str(min) + " | " + str(max) + " | " + p + website  + " | " + time.strftime("%c")
-                status = find_all_links(min, p + website)
-                if status is not False:  
+                urls = find_all_links(min, p + website)
+                if urls is not False:  
+                    print urls
                     break
         min+=1   
 
