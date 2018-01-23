@@ -73,9 +73,9 @@ def nblockInterval(n,min,max):
             website = conn.selectSeedweb(min)
             if website:
                 print "process -> " + str(n) + " | id ->" + str(min) + " | " + str(max) + " | " + p + website  + " | " + time.strftime("%c")
-                urls = find_all_links(min, p + website)
-                if urls is not False:  
-                    print urls
+                status = find_all_links(min, p + website)
+                if status is not False:  
+                    print status
                     break
         min+=1   
 
