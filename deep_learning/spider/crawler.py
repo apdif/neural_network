@@ -1,9 +1,5 @@
 # -*- encoding: utf-8 -*-
-<<<<<<< HEAD
 import httplib, urllib2, urlparse, time, os, sys, conn, re
-=======
-import httplib,urllib2, urlparse, time, os, sys, conn
->>>>>>> test
 import socket,ssl
 from multiprocessing import Process, Lock   
 
@@ -35,11 +31,7 @@ def request_html(i,url):
         print "Error httplib BadStatusLine"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib BadStatusLine"))
     except:
-<<<<<<< HEAD
-        print "Error httplib BadStatusLine"
-=======
         print sys.exc_info()[0]
->>>>>>> test
         os.abort()
     return "Error", False
         
