@@ -59,7 +59,7 @@ def f(l,n,min,max):
 
 def nblock():
     n = 1
-    process = 1
+    process = 10
     block = int(conn.verifyProcess()) / process
     while n <= process:
         lock = Lock()
