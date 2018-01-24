@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import httplib,urllib2, time, os, sys, conn
 import socket,ssl
 

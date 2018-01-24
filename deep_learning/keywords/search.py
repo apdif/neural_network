@@ -1,6 +1,6 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: UTF-8 -*-
 from deep_learning.keywords import lib_error
-import time, conn, langdetect
+import time, conn, langdetect, re
 from ast import literal_eval
 from multiprocessing import Process, Lock   
 
@@ -11,24 +11,25 @@ def delete_words(title):
     return title
 
 def identify(html): 
+    txttodb = 'Untitled'
+    detectlang = 'es'
+    possiblelangs = ''
     if html.find('<title>') >= 0:
         starthtml = html.find('<title>')
         endhtml = html.find('</title>',starthtml+1)
         text = html[starthtml+len('<title>'):endhtml] 
-    
-        txttodb = delete_words((u'%s' % repr(text)).encode('utf-8'))
-        print txttodb
-        
-        detectlang = langdetect.detect(txttodb) 
-        print detectlang
-        
-        possiblelangs = langdetect.detect_langs(txttodb)
-        print possiblelangs     
+        origin = delete_words(text)
+        print origin
+        if len(origin) > 6:
+            txttodb = delete_words(u'%s' % repr(text))
+            detectlang = langdetect.detect(txttodb)   
+            possiblelangs = langdetect.detect_langs(txttodb)     
+        return txttodb,detectlang,possiblelangs 
 
 def get_keyword(j,p):
     list_keyword = ''
     keywods = ['mp3','descargar','download','music','convert','free','gratis']  
-    identify(p)    
+    print identify(p)    
     
 
 def find_all_keywords(i,p):  
@@ -36,6 +37,7 @@ def find_all_keywords(i,p):
     if status is True:
         if p is not None:
             get_keyword(i,p)
+            return True
     return False
 
 def nblockInterval(n,min,max):
