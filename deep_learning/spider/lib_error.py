@@ -13,26 +13,27 @@ def request_html(i,url):
         return html.lower().replace("'","\""), True
     except urllib2.URLError as e:
         var_error = "Error " + str(e.reason)
-        conn.updateerr(i, "Referrer: " + url + ";\nError: " + str(e.reason))
+        conn.updateerr(i, str(e.reason))
     except socket.timeout:
         var_error = "Error timeout"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error TimeOut"))
+        conn.updateerr(i,"Error: Error TimeOut")
     except socket.error:
         var_error = "Error Socket"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error Socket"))
+        conn.updateerr(i,"Error: Error Socket")
     except ssl.SSLError:
         var_error = "Error SSLError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSL"))
+        conn.updateerr(i,"Error: Error SSL")
     except ssl.CertificateError:
         var_error = "Error CertificateError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSl"))
+        conn.updateerr(i,"Error: Error SSl")
     except httplib.BadStatusLine:
         var_error = "Error httplib BadStatusLine"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib BadStatusLine"))
+        conn.updateerr(i,"Error httplib BadStatusLine")
     except httplib.IncompleteRead:
         var_error = "Error httplib BadStatusLine"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib IncompleteRead"))
+        conn.updateerr(i,"Error httplib IncompleteRead")
     except:
         print sys.exc_info()[0]
+        conn.updateerr(i,"Break")
         os.abort()
     return var_error, False
