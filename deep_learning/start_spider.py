@@ -1,4 +1,4 @@
-from spider import crawler 
+from spider import crawler
 
 if __name__ == '__main__':
-    crawler.nblock()
+    crawler.nblockInterval(1,1,10000)

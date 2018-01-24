@@ -15,3 +15,10 @@ def conection(enquery):
 def verifyProcess():  
     query = "SELECT COUNT(*) FROM seedweb"
     return conection(query)[0][0]
+
+def selectSeedweb(i):  
+    query = "SELECT domain FROM seedweb WHERE id = %s AND verify = 2" % (i)
+    results = conection(query)
+    if len(results) > 0:
+        return results[0][0]
+    return False
