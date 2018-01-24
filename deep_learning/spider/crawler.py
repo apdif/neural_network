@@ -77,7 +77,7 @@ def nblockInterval(n,min,max):
                 print "process -> " + str(n) + " | id ->" + str(min) + " | " + str(max) + " | " + p + website  + " | " + time.strftime("%c")
                 status = find_all_links(min, p + website)
                 if status is not False:  
-                    #print status
+                    print status
                     break
         min+=1   
 
