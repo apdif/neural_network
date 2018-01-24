@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import urllib2, urlparse, time, os, sys, conn, re
+import httplib,urllib2, urlparse, time, os, sys, conn, re
 import socket,ssl
 from multiprocessing import Process, Lock   
 
@@ -27,9 +27,11 @@ def request_html(i,url):
     except ssl.CertificateError:
         print "Error CertificateError"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSl"))
+    except httplib.BadStatusLine:
+        print "Error httplib BadStatusLine"
+        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib BadStatusLine"))
     except:
-        print "Error: " + sys.exc_info()[0]
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: " + sys.exc_info()[0]))
+        print sys.exc_info()[0]
         os.abort()
     return "Error", False
         
