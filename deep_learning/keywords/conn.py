@@ -22,7 +22,3 @@ def selectSeedweb(i):
     if len(results) > 0:
         return results[0][0]
     return False
-
-def updateerr(i,e):   
-    query = "UPDATE seedweb SET verify = 4, error_txt = '%s', modified_date = now() WHERE id = %s " % (e,i)
-    conection(query)

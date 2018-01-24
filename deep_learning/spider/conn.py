@@ -23,6 +23,10 @@ def selectSeedweb(i):
         return results[0][0]
     return False
 
+def updateverify(i):   
+    query = "UPDATE seedweb SET verify = 2, modified_date = now() WHERE id = %s " % (i)
+    conection(query)
+
 def addSeedweb(i):
     query = "SELECT id FROM seedweb WHERE domain = '%s' " % (i)
     if len(conection(query)) == 0:
@@ -32,7 +36,4 @@ def addSeedweb(i):
 def updateerr(i,e):   
     query = "UPDATE seedweb SET verify = 3, error_txt = '%s', modified_date = now() WHERE id = %s " % (e,i)
     conection(query)
-    
-def updateverify(i):   
-    query = "UPDATE seedweb SET verify = 2, modified_date = now() WHERE id = %s " % (i)
-    conection(query)
+        

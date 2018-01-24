@@ -1,40 +1,8 @@
 # -*- encoding: utf-8 -*-
-import httplib,urllib2, urlparse, time, os, sys, conn
-import socket,ssl
+import lib_error
+import urlparse, time, conn
 from multiprocessing import Process, Lock   
-
-def request_html(i,url): 
-    time.sleep(1) 
-    try:    
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent','Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36')]
-        html = opener.open(url  ,timeout = 6).read() 
-        opener.close()  
-        conn.updateverify(i)
-        return html.lower().replace("'","\""), True
-    except urllib2.URLError as e:
-        print "Error " + str(e.reason)
-        conn.updateerr(i, "Referrer: " + url + ";\nError: " + str(e.reason))
-    except socket.timeout:
-        print "Error timeout"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error TimeOut"))
-    except socket.error:
-        print "Error Socket"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error Socket"))
-    except ssl.SSLError:
-        print "Error SSLError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSL"))
-    except ssl.CertificateError:
-        print "Error CertificateError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSl"))
-    except httplib.BadStatusLine:
-        print "Error httplib BadStatusLine"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib BadStatusLine"))
-    except:
-        print sys.exc_info()[0]
-        os.abort()
-    return "Error", False
-        
+       
 def get_url(url):
     url = url.replace("www.","").replace("http://","").replace("https://","")     
     conn.addSeedweb(url) 
@@ -44,14 +12,14 @@ def get_next_link(p, tags):
     start_link = p.find(tags)
     start_quote = p.find('"',start_link)
     end_quote = p.find('"',start_quote + 1)
-    url = p[start_quote + 1: end_quote]
+    url = p[start_quote + 1: end_quote].replace('\\','')
     if urlparse.urljoin(url, '/')[:-1].lower().find(" ") < 0:
         return urlparse.urljoin(url, '/')[:-1],end_quote
     return "",end_quote
 
 def find_all_links(i,p):  
     urls = []
-    p, status = request_html(i,p)
+    p, status = lib_error.request_html(i,p)
     if status is True:
         if p is not None:
             links_extract = ["href=", "src="]

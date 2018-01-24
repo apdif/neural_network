@@ -1,44 +1,37 @@
 # -*- encoding: utf-8 -*-
-import httplib,urllib2, urlparse, time, os, sys, conn
-import socket,ssl
+from deep_learning.keywords import lib_error
+import time, conn, langdetect
+from ast import literal_eval
 from multiprocessing import Process, Lock   
 
-def request_html(i,url): 
-    time.sleep(1) 
-    try:    
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent','Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36')]
-        html = opener.open(url  ,timeout = 6).read() 
-        opener.close()  
-        return html.lower().replace("'","\""), True
-    except urllib2.URLError as e:
-        print "Error " + str(e.reason)
-        conn.updateerr(i, "Referrer: " + url + ";\nError: " + str(e.reason))
-    except socket.timeout:
-        print "Error timeout"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error TimeOut"))
-    except socket.error:
-        print "Error Socket"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error Socket"))
-    except ssl.SSLError:
-        print "Error SSLError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSL"))
-    except ssl.CertificateError:
-        print "Error CertificateError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSl"))
-    except httplib.BadStatusLine:
-        print "Error httplib BadStatusLine"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib BadStatusLine"))
-    except:
-        print sys.exc_info()[0]
-        os.abort()
-    return "Error", False
+def identify(html): 
+    if html.find('<title>') >= 0:
+        starthtml = html.find('<title>')
+        endhtml = html.find('</title>',starthtml+1)
+        text = html[starthtml+len('<title>'):endhtml] 
+          
+        txttodb = (u'%s' % text).encode('utf-8')
+        detectlang = langdetect.detect(literal_eval(u'%s' % repr(text.decode('utf-8')))) 
+        possiblelangs = langdetect.detect_langs(literal_eval(u'%s' % repr(text.decode('utf-8'))))
+             
+        print text
+        print txttodb
+        print detectlang
+        print possiblelangs
+        print "---------------"
+
+
+def get_keyword(j,p):
+    list_keyword = ''
+    keywods = ['mp3','descargar','download','music','convert','free','gratis']  
+    identify(p)    
+    
 
 def find_all_keywords(i,p):  
-    p, status = request_html(i,p)
+    p, status = lib_error.request_html(i,p)
     if status is True:
         if p is not None:
-            print "Code HTML"
+            get_keyword(i,p)
     return False
 
 def nblockInterval(n,min,max):
