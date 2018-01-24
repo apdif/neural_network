@@ -4,22 +4,26 @@ import time, conn, langdetect
 from ast import literal_eval
 from multiprocessing import Process, Lock   
 
+def delete_words(title):
+    title = title.replace('\'','').replace('|','').replace('"','')
+    while title.find('  ') >= 0:
+        title = title.replace('  ',' ')
+    return title
+
 def identify(html): 
     if html.find('<title>') >= 0:
         starthtml = html.find('<title>')
         endhtml = html.find('</title>',starthtml+1)
         text = html[starthtml+len('<title>'):endhtml] 
-          
-        txttodb = (u'%s' % text).encode('utf-8')
-        detectlang = langdetect.detect(literal_eval(u'%s' % repr(text.decode('utf-8')))) 
-        possiblelangs = langdetect.detect_langs(literal_eval(u'%s' % repr(text.decode('utf-8'))))
-             
-        print text
+    
+        txttodb = delete_words((u'%s' % repr(text)).encode('utf-8'))
         print txttodb
+        
+        detectlang = langdetect.detect(txttodb) 
         print detectlang
-        print possiblelangs
-        print "---------------"
-
+        
+        possiblelangs = langdetect.detect_langs(txttodb)
+        print possiblelangs     
 
 def get_keyword(j,p):
     list_keyword = ''

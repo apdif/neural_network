@@ -17,8 +17,13 @@ def verifyProcess():
     return conection(query)[0][0]
 
 def selectSeedweb(i):  
-    query = "SELECT domain FROM seedweb WHERE id = %s AND verify = 2" % (i)
+    query = "SELECT domain FROM seedweb WHERE id = %s " % (i) #AND verify = 2
     results = conection(query)
     if len(results) > 0:
         return results[0][0]
     return False
+
+def updateerr(i,e):   
+    query = "UPDATE seedweb SET verify = 3, error_txt = '%s', modified_date = now() WHERE id = %s " % (e,i)
+    conection(query)
+        
