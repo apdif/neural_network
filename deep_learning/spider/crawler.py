@@ -1,5 +1,9 @@
 # -*- encoding: utf-8 -*-
+<<<<<<< HEAD
 import httplib, urllib2, urlparse, time, os, sys, conn, re
+=======
+import httplib,urllib2, urlparse, time, os, sys, conn
+>>>>>>> test
 import socket,ssl
 from multiprocessing import Process, Lock   
 
@@ -13,20 +17,29 @@ def request_html(i,url):
         conn.updateverify(i)
         return html.lower().replace("'","\""), True
     except urllib2.URLError as e:
+        print "Error " + str(e.reason)
         conn.updateerr(i, "Referrer: " + url + ";\nError: " + str(e.reason))
     except socket.timeout:
+        print "Error timeout"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error TimeOut"))
     except socket.error:
+        print "Error Socket"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error Socket"))
     except ssl.SSLError:
+        print "Error SSLError"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSL"))
     except ssl.CertificateError:
+        print "Error CertificateError"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSl"))
     except httplib.BadStatusLine:
         print "Error httplib BadStatusLine"
         conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib BadStatusLine"))
     except:
+<<<<<<< HEAD
         print "Error httplib BadStatusLine"
+=======
+        print sys.exc_info()[0]
+>>>>>>> test
         os.abort()
     return "Error", False
         
@@ -71,7 +84,7 @@ def nblockInterval(n,min,max):
             if website:
                 print "process -> " + str(n) + " | id ->" + str(min) + " | " + str(max) + " | " + p + website  + " | " + time.strftime("%c")
                 status = find_all_links(min, p + website)
-                if status is not False:  
+                if status is not False:
                     break
         min+=1   
 
