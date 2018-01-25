@@ -27,7 +27,13 @@ def get_keyword(j,p):
     list_keyword = ''
     keywods = ['mp3','descargar','download','music','convert','free','gratis']  
     print identify(p)    
-    
+    start = p.find("<body")
+    end = p.find('/body>',start)
+    newpage = p[start:end]
+    for i in keywods:
+        if newpage.find(i) != -1 :
+            list_keyword = list_keyword + " " + i     
+    print list_keyword
 
 def find_all_keywords(i,p,n,m):  
     website = p

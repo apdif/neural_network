@@ -17,7 +17,7 @@ def verifyProcess():
     return conection(query)[0][0]
 
 def selectSeedweb(i):  
-    query = "SELECT domain FROM seedweb WHERE id = %s " % (i) #AND verify = 2
+    query = "SELECT domain FROM seedweb WHERE id = %s AND verify = 2" % (i)
     results = conection(query)
     if len(results) > 0:
         return results[0][0]
