@@ -15,24 +15,14 @@ def conection(enquery):
 def verifyProcess():  
     query = "SELECT COUNT(*) FROM seedweb"
     return conection(query)[0][0]
-        
+
 def selectSeedweb(i):  
-    query = "SELECT domain FROM seedweb WHERE id = %s AND verify = 1" % (i)
+    query = "SELECT domain FROM seedweb WHERE id = %s " % (i) #AND verify = 2
     results = conection(query)
     if len(results) > 0:
         return results[0][0]
     return False
 
-def updateverify(i):   
-    query = "UPDATE seedweb SET verify = 2, modified_date = now() WHERE id = %s " % (i)
-    conection(query)
-
-def addSeedweb(i):
-    query = "SELECT id FROM seedweb WHERE domain = '%s' " % (i)
-    if len(conection(query)) == 0:
-        query = "INSERT INTO seedweb(domain) VALUES ('%s') " % (i)
-        conection(query)
-        
 def updateerr(i,e):   
     query = "UPDATE seedweb SET verify = 3, error_txt = '%s', modified_date = now() WHERE id = %s " % (e,i)
     conection(query)
