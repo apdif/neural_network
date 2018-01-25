@@ -2,6 +2,12 @@
 import httplib,urllib2, time, os, sys, conn
 import socket,ssl
 
+def delete_words(title):
+    title = title.replace('\'','').replace('|','').replace('"','')
+    while title.find('  ') >= 0:
+        title = title.replace('  ',' ')
+    return title
+
 def request_html(i,url): 
     time.sleep(1) 
     try:    
@@ -13,7 +19,7 @@ def request_html(i,url):
         return html.lower().replace("'","\""), True
     except urllib2.URLError as e:
         var_error = "Error " + str(e.reason)
-        conn.updateerr(i, str(e.reason))
+        conn.updateerr(i, delete_words(str(e.reason)))
     except socket.timeout:
         var_error = "Error timeout"
         conn.updateerr(i,"Error: Error TimeOut")

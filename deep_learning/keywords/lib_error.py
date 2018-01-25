@@ -2,6 +2,12 @@
 import httplib,urllib2, time, os, sys, conn
 import socket,ssl
 
+def delete_words(title):
+    title = title.replace('\'','').replace('|','').replace('"','')
+    while title.find('  ') >= 0:
+        title = title.replace('  ',' ')
+    return title
+
 def request_html(i,url): 
     time.sleep(1) 
     try:    
@@ -11,27 +17,28 @@ def request_html(i,url):
         opener.close()  
         return html.lower().replace("'","\""), True
     except urllib2.URLError as e:
-        print "Error " + str(e.reason)
-        conn.updateerr(i, "Referrer: " + url + ";\nError: " + str(e.reason))
+        var_error = "Error " + str(e.reason)
+        conn.updateerr(i, delete_words(str(e.reason)))
     except socket.timeout:
-        print "Error timeout"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error TimeOut"))
+        var_error = "Error timeout"
+        conn.updateerr(i,"Error: Error TimeOut")
     except socket.error:
-        print "Error Socket"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error Socket"))
+        var_error = "Error Socket"
+        conn.updateerr(i,"Error: Error Socket")
     except ssl.SSLError:
-        print "Error SSLError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSL"))
+        var_error = "Error SSLError"
+        conn.updateerr(i,"Error: Error SSL")
     except ssl.CertificateError:
-        print "Error CertificateError"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error SSl"))
+        var_error = "Error CertificateError"
+        conn.updateerr(i,"Error: Error SSl")
     except httplib.BadStatusLine:
-        print "Error httplib BadStatusLine"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib BadStatusLine"))
+        var_error = "Error httplib BadStatusLine"
+        conn.updateerr(i,"Error httplib BadStatusLine")
     except httplib.IncompleteRead:
-        print "Error httplib BadStatusLine"
-        conn.updateerr(i,str("Referrer: " + url + ";\nError: Error httplib IncompleteRead"))
+        var_error = "Error httplib BadStatusLine"
+        conn.updateerr(i,"Error httplib IncompleteRead")
     except:
         print sys.exc_info()[0]
+        conn.updateerr(i,"Break")
         os.abort()
-    return "Error", False
+    return var_error, False

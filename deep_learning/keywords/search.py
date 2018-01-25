@@ -4,12 +4,6 @@ import time, conn, langdetect, re
 from ast import literal_eval
 from multiprocessing import Process, Lock   
 
-def delete_words(title):
-    title = title.replace('\'','').replace('|','').replace('"','')
-    while title.find('  ') >= 0:
-        title = title.replace('  ',' ')
-    return title
-
 def identify(html): 
     txttodb = 'Untitled'
     detectlang = 'es'
@@ -18,10 +12,10 @@ def identify(html):
         starthtml = html.find('<title>')
         endhtml = html.find('</title>',starthtml+1)
         text = html[starthtml+len('<title>'):endhtml] 
-        origin = delete_words(text)
+        origin = lib_error.delete_words(text)
         print origin
         try:
-            txttodb = delete_words(u'%s' % repr(text))
+            txttodb = lib_error.delete_words(u'%s' % repr(text))
             detectlang = langdetect.detect(txttodb)   
             possiblelangs = langdetect.detect_langs(txttodb)   
         except:
@@ -35,12 +29,15 @@ def get_keyword(j,p):
     print identify(p)    
     
 
-def find_all_keywords(i,p):  
+def find_all_keywords(i,p,n,m):  
+    website = p
     p, status = lib_error.request_html(i,p)
     if status is True:
+        print "process -> " + str(n) + " | id ->" + str(i) + " | " + str(m) + " | " + website + " | " + time.strftime("%c") + " | Correct"
         if p is not None:
             get_keyword(i,p)
             return True
+    print "process -> " + str(n) + " | id ->" + str(i) + " | " + str(m) + " | " + website + " | " + time.strftime("%c") + " | " + p
     return False
 
 def nblockInterval(n,min,max):
@@ -49,8 +46,7 @@ def nblockInterval(n,min,max):
         for p in protocol:            
             website = conn.selectSeedweb(min)
             if website:
-                print "process -> " + str(n) + " | id ->" + str(min) + " | " + str(max) + " | " + p + website  + " | " + time.strftime("%c")
-                status = find_all_keywords(min, p + website)
+                status = find_all_keywords(min, p + website, n, max)
                 if status is not False:
                     break
         min+=1   
