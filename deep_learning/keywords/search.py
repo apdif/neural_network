@@ -20,10 +20,13 @@ def identify(html):
         text = html[starthtml+len('<title>'):endhtml] 
         origin = delete_words(text)
         print origin
-        if len(origin) > 6:
+        try:
             txttodb = delete_words(u'%s' % repr(text))
             detectlang = langdetect.detect(txttodb)   
-            possiblelangs = langdetect.detect_langs(txttodb)     
+            possiblelangs = langdetect.detect_langs(txttodb)   
+        except:
+            detectlang = 'NA'
+            possiblelangs = 'NA'
         return txttodb,detectlang,possiblelangs 
 
 def get_keyword(j,p):
