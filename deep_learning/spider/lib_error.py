@@ -31,13 +31,16 @@ def request_html(i,url):
         conn.updateerr(i,"Error: Error SSL")
     except ssl.CertificateError:
         var_error = "Error CertificateError"
-        conn.updateerr(i,"Error: Error SSl")
+        conn.updateerr(i,"Error: Error CertificateError")
     except httplib.BadStatusLine:
         var_error = "Error httplib BadStatusLine"
         conn.updateerr(i,"Error httplib BadStatusLine")
     except httplib.IncompleteRead:
-        var_error = "Error httplib BadStatusLine"
+        var_error = "Error httplib IncompleteRead"
         conn.updateerr(i,"Error httplib IncompleteRead")
+    except httplib.HTTPException:
+        var_error = "Error httplib HTTPException"
+        conn.updateerr(i,"Error httplib HTTPException")
     except:
         print sys.exc_info()[0]
         conn.updateerr(i,"Break")
