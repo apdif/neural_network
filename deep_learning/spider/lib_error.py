@@ -2,6 +2,12 @@
 import httplib,urllib2, time, os, sys, conn
 import socket,ssl
 
+def delete_words(title):
+    title = title.replace('\'','').replace('|','').replace('"','')
+    while title.find('  ') >= 0:
+        title = title.replace('  ',' ')
+    return title
+
 def request_html(i,url): 
     time.sleep(1) 
     try:    
@@ -13,7 +19,7 @@ def request_html(i,url):
         return html.lower().replace("'","\""), True
     except urllib2.URLError as e:
         var_error = "Error " + str(e.reason)
-        conn.updateerr(i, str(e.reason))
+        conn.updateerr(i, delete_words(str(e.reason)))
     except socket.timeout:
         var_error = "Error timeout"
         conn.updateerr(i,"Error: Error TimeOut")
@@ -25,13 +31,16 @@ def request_html(i,url):
         conn.updateerr(i,"Error: Error SSL")
     except ssl.CertificateError:
         var_error = "Error CertificateError"
-        conn.updateerr(i,"Error: Error SSl")
+        conn.updateerr(i,"Error: Error CertificateError")
     except httplib.BadStatusLine:
         var_error = "Error httplib BadStatusLine"
         conn.updateerr(i,"Error httplib BadStatusLine")
     except httplib.IncompleteRead:
-        var_error = "Error httplib BadStatusLine"
+        var_error = "Error httplib IncompleteRead"
         conn.updateerr(i,"Error httplib IncompleteRead")
+    except httplib.HTTPException:
+        var_error = "Error httplib HTTPException"
+        conn.updateerr(i,"Error httplib HTTPException")
     except:
         print sys.exc_info()[0]
         conn.updateerr(i,"Break")
