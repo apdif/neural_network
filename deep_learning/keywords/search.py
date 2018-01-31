@@ -1,8 +1,11 @@
 # -*- coding: UTF-8 -*-
 from deep_learning.keywords import lib_error
-import time, conn, langdetect, re
-from ast import literal_eval
+import time, conn, langdetect, sys
 from multiprocessing import Process, Lock   
+from bs4 import BeautifulSoup
+import nltk
+from nltk.corpus import stopwords
+
 
 def identify(html): 
     txttodb = 'Untitled'
@@ -24,16 +27,27 @@ def identify(html):
         return txttodb,detectlang,possiblelangs 
  
 def get_keyword(j,p):
-    list_keyword = ''
     keywods = ['mp3','descargar','download','music','convert','free','gratis']  
     print identify(p)    
     start = p.find("<body")
     end = p.find('/body>',start)
     newpage = p[start:end]
-    for i in keywods:
-        if newpage.find(i) != -1 :
-            list_keyword = list_keyword + " " + i     
-    print list_keyword
+    
+    soup = BeautifulSoup(newpage,"html5lib")
+    text = soup.get_text(strip=True).replace('\n',' ').replace('\t',' ')
+    while text.find('  ') >= 0:
+        text = text.replace('  ',' ')
+    
+    tokens = [t for t in text.split()]
+    clean_tokens = tokens[:]    
+    sr = stopwords.words('english')
+    for token in tokens:
+        if token in stopwords.words('english'):
+            clean_tokens.remove(token) 
+    freq = nltk.FreqDist(clean_tokens)
+    freq.plot(20,cumulative=False)
+    sys.exit()
+    
 
 def find_all_keywords(i,p,n,m):  
     website = p
