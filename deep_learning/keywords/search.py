@@ -1,8 +1,9 @@
 # -*- coding: UTF-8 -*-
 from deep_learning.keywords import lib_error
-import time, conn, langdetect, re
-from ast import literal_eval
+import time, conn, langdetect, sys
 from multiprocessing import Process, Lock   
+
+
 
 def identify(html): 
     txttodb = 'Untitled'
@@ -29,7 +30,7 @@ def get_keyword(j,p):
     print identify(p)    
     start = p.find("<body")
     end = p.find('/body>',start)
-    newpage = p[start:end]
+    newpage = p[start:end] 
     for i in keywods:
         if newpage.find(i) != -1 :
             list_keyword = list_keyword + " " + i     
