@@ -28,29 +28,18 @@ def identify(html):
             possiblelangs = 'NA'
         return txttodb,detectlang,possiblelangs 
  
-def delete_chr(text,str):
-    while text.find(str) >= 0:
-        text = text.replace(str,' ')
-    return text
-
-
-def get_keyword(j,p):
-    lemmatizer = WordNetLemmatizer()
-    #Identify lenguage
-    print identify(p) 
-    #extract only the content between the tag <body> and </body>   
-    start = p.find("<body")
-    end = p.find('/body>',start)
-    #delete all the tag of html
-    soup = BeautifulSoup(p[start:end + 6].replace('>','>*'),"html5lib")
-    text = soup.get_text(strip=True)
-    #find and delete the special characters
+def delete_chr(text):
     chr_esp = ['*','\n','\t','.',',','\'','_','\"',"-",'  ']
     for n in chr_esp:
-        text = delete_chr(text,n)
-    #split the text
+        while text.find(n) >= 0:
+            text = text.replace(n,' ')
+    return text
+
+def index_words(code_html):
+    lemmatizer = WordNetLemmatizer()
+    soup = BeautifulSoup(code_html.replace('>','>*'),"html5lib")
+    text = delete_chr(soup.get_text(strip=True))     
     tokens = [t for t in text.split()] 
-    #delete words with special characters
     patron = re.compile(r"^([a-zA-Z]+)$")   #[a-zA-Z] OR \w
     new_tokens = []
     delete_tokens = []
@@ -59,20 +48,45 @@ def get_keyword(j,p):
             new_tokens.append(lemmatizer.lemmatize(i, pos="v"))
         else:
             delete_tokens.append(i)
-    #clean 
     clean_tokens = new_tokens[:]    
     for token in new_tokens:
         if token in stopwords.words():
-            clean_tokens.remove(token) 
-    #create the frequence        
+            clean_tokens.remove(token)         
     freq = nltk.FreqDist(clean_tokens)
-    print freq.most_common(len(freq))
-    print "-------------------------------------------------------------------"
-    time.sleep(1)
-    #create a graph
+    return freq
+
+def find_contents(text,str):
+    search_keywords = re.compile('name.*.'+ str +'.*.content.*\"(?P<contents>.*)"')
+    if search_keywords.search(text):
+        get_keywords = search_keywords.search(text)
+        return get_keywords.group('contents')
+    return False
+
+def get_keyword(j,p):
+    print identify(p)  
+    text_meta = ""
+    meta = p
+    while meta.find("<meta") > 0:
+        start_meta_title = meta.find("<meta")
+        end_meta_title = meta.find(">", start_meta_title)
+        text_find = meta[start_meta_title:end_meta_title + 1]
+        str_find = ["keywords","description","title"]
+        for xyz in str_find:
+            if find_contents(text_find,xyz):
+                text_meta = find_contents(text_find,xyz) + " " + text_meta
+        meta = meta[end_meta_title:]
+    if index_words(text_meta):
+        freq = index_words(text_meta)
+    else:
+        start = p.find("<body")
+        end = p.find('/body>',start)
+        freq = index_words(p[start:end + 6])
+        
+    print freq.most_common(10)
+    print len(freq)
     #freq.plot(20,cumulative=False) 
-    #Search keywords
-    #keywods = ['mp3','descargar','download','music','convert','free','gratis']
+    keywods = ['mp3','descargar','download','music','convert','free','gratis']
+    print "-----------------------------"
 
 def find_all_keywords(i,p,n,m):  
     website = p
